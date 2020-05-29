@@ -28,6 +28,7 @@ from airflow.models.base import ID_LEN, Base
 from airflow.models.crypto import get_fernet
 from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.utils.module_loading import import_string
+from sqlalchemy.sql.schema import UniqueConstraint
 
 # A map that assigns a connection type to a tuple that contains
 # the path of the class and the name of the conn_id key parameter.
@@ -118,6 +119,8 @@ class Connection(Base, LoggingMixin):
     is_encrypted = Column(Boolean, unique=False, default=False)
     is_extra_encrypted = Column(Boolean, unique=False, default=False)
     _extra = Column('extra', String(5000))
+
+    UniqueConstraint(conn_id, name='unique_conn_id')
 
     _types = [
         ('docker', 'Docker Registry'),
